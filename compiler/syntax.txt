@@ -18,10 +18,11 @@ statement -> store ID val
 statement -> FNAME ( paramCall )
 statement -> assignment
 assignment -> ID = asgmtVal
-asgmtVal -> val asgmtVal'
-asgmtVal -> ~ id
-asgmtVal' -> OP val
-asgmtVal' -> ''
+asgmtVal -> valOp
+valOp -> val valOp'
+valOp -> ~ ID
+valOp' -> OP val
+valOp' -> ''
 asgmtVal -> FNAME ( paramCall )
 val -> ID
 val -> NUM
@@ -35,9 +36,9 @@ OP -> |
 OP -> ^
 OP -> <<
 OP -> >>
-paramCall -> val paramCall'
+paramCall -> valOp paramCall'
 paramCall -> ''
-paramCall' -> , val paramCall'
+paramCall' -> , valOp paramCall'
 paramCall' -> ''
 statement -> if ( condition ) { block } elseBlock
 elseBlock -> else { block }

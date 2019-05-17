@@ -11,6 +11,24 @@ def get_constants(block):
         return []
     return get_constants(block[1:])
 
+def generate_valOp(dest, valOp, mapper):
+    if valOp[0] == '~':
+        return 'not {} {}'.format(dest, mapper[valOp[1]])
+    else:
+        op = {
+            '+': 'add',
+            '-': 'sub',
+            '*': 'mul',
+            '/': 'div',
+            '%': 'mod',
+            '&': 'and',
+            '|': 'or',
+            '^': 'xor',
+            '<<': 'shl',
+            '>>': 'shr'
+        }[valOp[0]]
+        return '{} {} {} {}'.format(op, dest, mapper[valOp[1]], mapper[valOp[2]])
+
 def generate_block(block, fname, base_tag, mapper):
     code = []
     subblock = 0
@@ -84,25 +102,14 @@ def generate_block(block, fname, base_tag, mapper):
                 asgmtVal = statement[2]
                 if asgmtVal[0] == 'call':
                     for i, v in enumerate(asgmtVal[2]):
-                        code.append('mov r{} {}'.format(i+2, mapper[v]))
+                        if type(v) is not list:
+                            code.append('mov r{} {}'.format(i+2, mapper[v]))
+                        else:
+                            code.append(generate_valOp('r{}'.format(i+2), v, mapper))
                     code.append('call {}'.format(asgmtVal[1]))
                     code.append('mov {} r1'.format(mapper[statement[1]]))
-                elif asgmtVal[0] == '~':
-                    code.append('not {} {}'.format(mapper[statement[1]], mapper[asgmtVal[1]]))
                 else:
-                    op = {
-                        '+': 'add',
-                        '-': 'sub',
-                        '*': 'mul',
-                        '/': 'div',
-                        '%': 'mod',
-                        '&': 'and',
-                        '|': 'or',
-                        '^': 'xor',
-                        '<<': 'shl',
-                        '>>': 'shr'
-                    }[asgmtVal[0]]
-                    code.append('{} {} {} {}'.format(op, mapper[statement[1]], mapper[asgmtVal[1]], mapper[asgmtVal[2]]))
+                    code.append(generate_valOp(mapper[statement[1]], asgmtVal, mapper))
         else:
             print(statement)
     return code

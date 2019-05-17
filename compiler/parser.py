@@ -145,17 +145,9 @@ class Parser:
         raise SyntaxError('Unexpected token ' + self.tokens[0])
 
     def __parse_asgmtVal(self):
-        if self.tokens[0] == '~':
-            self.__match('~')
-            val = self.__parse_id()
-            return ['~', val]
-        elif is_id(self.tokens[0]) or is_num(self.tokens[0]):
-            val = self.__parse_val()
-            asgmtVal2 = self.__parse_asgmtVal2()
-            if len(asgmtVal2) > 0:
-                return [asgmtVal2[0], val, asgmtVal2[1]]
-            else:
-                return val
+        if self.tokens[0] == '~' or is_id(self.tokens[0]) or is_num(self.tokens[0]):
+            valOp = self.__parse_valOp()
+            return valOp
         elif is_fname(self.tokens[0]):
             fname = self.__parse_fname()
             self.__match('(')
@@ -166,6 +158,29 @@ class Parser:
 
     def __parse_asgmtVal2(self):
         if self.tokens[0] == ';':
+            return []
+        elif self.tokens[0] in ['+', '-', '*', '/', '%', '&', '|', '^', '~', '<<', '>>']:
+            op = self.__parse_op()
+            val = self.__parse_val()
+            return [op, val]
+        raise SyntaxError('Unexpected token ' + self.tokens[0])
+
+    def __parse_valOp(self):
+        if self.tokens[0] == '~':
+            self.__match('~')
+            id = self.__parse_id()
+            return ['~', id]
+        elif is_id(self.tokens[0]) or is_num(self.tokens[0]):
+            val = self.__parse_val()
+            valOp2 = self.__parse_valOp2()
+            if len(valOp2) > 0:
+                return [valOp2[0], val, valOp2[1]]
+            else:
+                return val
+        raise SyntaxError('Unexpected token ' + self.tokens[0])
+
+    def __parse_valOp2(self):
+        if self.tokens[0] in [';', ')', ',']:
             return []
         elif self.tokens[0] in ['+', '-', '*', '/', '%', '&', '|', '^', '~', '<<', '>>']:
             op = self.__parse_op()
@@ -184,9 +199,9 @@ class Parser:
         if self.tokens[0] == ')':
             return []
         elif is_id(self.tokens[0]) or is_num(self.tokens[0]):
-            val = self.__parse_val()
-            vals = self.__parse_paramCall2()
-            return [val] + vals
+            valOp = self.__parse_valOp()
+            valOps = self.__parse_paramCall2()
+            return [valOp] + valOps
         raise SyntaxError('Unexpected token ' + self.tokens[0])
 
     def __parse_paramCall2(self):
@@ -194,9 +209,9 @@ class Parser:
             return []
         elif self.tokens[0] == ',':
             self.__match(',')
-            val = self.__parse_val()
-            vals = self.__parse_paramCall2()
-            return [val] + vals
+            valOp = self.__parse_valOp()
+            valOps = self.__parse_paramCall2()
+            return [valOp] + valOps
         raise SyntaxError('Unexpected token ' + self.tokens[0])
 
     def __parse_elseBlock(self):
