@@ -1,0 +1,53 @@
+code -> function code
+code -> funcContent
+function -> func FNAME ( params ) funcContent
+params -> ID params'
+params -> ''
+params' -> , ID params'
+params' -> ''
+funcContent -> ( vars ) { block }
+vars -> ID vars'
+vars -> ''
+vars' -> , ID vars'
+vars' -> ''
+block -> statement ; block
+block -> ''
+statement -> return val
+statement -> load ID val
+statement -> store ID val
+statement -> FNAME ( paramCall )
+statement -> assignment
+assignment -> ID = asgmtVal
+asgmtVal -> val asgmtVal'
+asgmtVal -> ~ id
+asgmtVal' -> OP val
+asgmtVal' -> ''
+asgmtVal -> FNAME ( paramCall )
+val -> ID
+val -> NUM
+OP -> +
+OP -> -
+OP -> *
+OP -> /
+OP -> %
+OP -> &
+OP -> |
+OP -> ^
+OP -> <<
+OP -> >>
+paramCall -> val paramCall'
+paramCall -> ''
+paramCall' -> , val paramCall'
+paramCall' -> ''
+statement -> if ( condition ) { block } elseBlock
+elseBlock -> else { block }
+elseBlock -> ''
+statement -> while ( condition ) { block }
+condition -> true
+condition -> val CMP val
+CMP -> ==
+CMP -> <
+CMP -> >
+CMP -> <=
+CMP -> >=
+CMP -> !=
