@@ -1,18 +1,18 @@
 import re
 
-def is_id(token):
+def is_id(token: str) -> bool:
     if type(token) is not str:
         return False
     match = re.findall('^[a-zA-Z_][a-zA-Z_0-9]?$', token)
     return len(match) > 0
 
-def is_fname(token):
+def is_fname(token: str) -> bool:
     return token[0].isalpha() and len(token) > 2
 
-def is_hex(token):
+def is_hex(token: str) -> bool:
     return token[:2] == '0x'
 
-def is_num(token):
+def is_num(token: str) -> bool:
     return token.isdigit()
 
 class Parser:
@@ -26,7 +26,7 @@ class Parser:
             raise SyntaxError('Unknown token ' + self.tokens[0])
         return tree
 
-    def __match(self, expected):
+    def __match(self, expected: str):
         if self.tokens[0] == expected:
             self.tokens = self.tokens[1:]
         else:

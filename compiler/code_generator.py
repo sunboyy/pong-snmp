@@ -66,7 +66,7 @@ def generate_block(block, fname, base_tag, mapper):
             else:
                 code.append('j{} {}__else_{}'.format(jmpMode, base_tag, subblock))
                 code += generate_block(block, fname, base_tag + '{}__if_{}'.format(base_tag, subblock), mapper)
-                code.append('jmp {}__endif{}'.format(base_tag, subblock))
+                code.append('jmp {}__endif_{}'.format(base_tag, subblock))
                 code.append('{}__else_{}:'.format(base_tag, subblock))
                 code += generate_block(elseBlock, fname, '{}__else_{}'.format(base_tag, subblock), mapper)
             code.append('{}__endif_{}:'.format(base_tag, subblock))
