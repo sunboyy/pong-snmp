@@ -48,7 +48,7 @@ wire sevenSegWEDec = addr == 16'hffff;
 wire sevenSeg = sevenSegWE0 | sevenSegWE1 | sevenSegWE2 | sevenSegWE3 | sevenSegWEAll | sevenSegWEDec;
 wire uartSend = addr == 16'hffef;
 wire uartReceive = addr == 16'hffd0;    // change from ffe0
-assign vga = (addr >= 16'he000) & (addr < 16'hf2c0);
+assign vga = (addr >= 16'hff00) & (addr < 16'hff10);
 wire io = switch | sevenSeg | uartSend | uartReceive | vga | ps2Receive;
 wire busy;
 wire [15:0] keycode;
@@ -65,7 +65,7 @@ UARTTransmitter uartt(RsTx, busy, realClk, we & uartSend & !busy, d[7:0]);
 
 //UARTReceiver uartr(uartData, irq, realClk, RsRx, iack, uartrState);
 memory mem(d, clk, addr, oe & !io, we & !io);
-vgaMemory vgam(vgaColor, d, clk, addr - 16'he000, vgaX, vgaY, oe & vga, we & vga);
+vgaMemory vgam(vgaColor, d, clk, addr, vgaX, vgaY, oe & vga, we & vga);
 PS2Receiver kb(realClk, PS2Clk, PS2Data, keycode, irq, iack);
 
 
