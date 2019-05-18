@@ -145,7 +145,7 @@ class Parser:
         raise SyntaxError('Unexpected token ' + self.tokens[0])
 
     def __parse_asgmtVal(self):
-        if self.tokens[0] == '~' or is_id(self.tokens[0]) or is_num(self.tokens[0]):
+        if self.tokens[0] == '~' or is_id(self.tokens[0]) or is_num(self.tokens[0]) or is_hex(self.tokens[0]):
             valOp = self.__parse_valOp()
             return valOp
         elif is_fname(self.tokens[0]):
@@ -170,7 +170,7 @@ class Parser:
             self.__match('~')
             id = self.__parse_id()
             return ['~', id]
-        elif is_id(self.tokens[0]) or is_num(self.tokens[0]):
+        elif is_id(self.tokens[0]) or is_num(self.tokens[0]) or is_hex(self.tokens[0]):
             val = self.__parse_val()
             valOp2 = self.__parse_valOp2()
             if len(valOp2) > 0:
@@ -198,7 +198,7 @@ class Parser:
     def __parse_paramCall(self):
         if self.tokens[0] == ')':
             return []
-        elif is_id(self.tokens[0]) or is_num(self.tokens[0]):
+        elif is_id(self.tokens[0]) or is_num(self.tokens[0]) or is_hex(self.tokens[0]):
             valOp = self.__parse_valOp()
             valOps = self.__parse_paramCall2()
             return [valOp] + valOps
@@ -229,7 +229,7 @@ class Parser:
         if self.tokens[0] == 'true':
             self.__match('true')
             return 'true'
-        if is_id(self.tokens[0]) or is_num(self.tokens[0]):
+        if is_id(self.tokens[0]) or is_num(self.tokens[0]) or is_hex(self.tokens[0]):
             val1 = self.__parse_val()
             cmp = self.__parse_cmp()
             val2 = self.__parse_val()
