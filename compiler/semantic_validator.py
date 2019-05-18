@@ -8,24 +8,29 @@ def validate_fname(fnames, fname):
     if fname not in fnames:
         raise SyntaxError('Undeclared function ' + fname)
 
+def validate_valOp(vars, valOp):
+    if valOp is not list:
+        validate_val(vars, valOp)
+    elif valOp[0] == '~':
+        validate_val(vars, valOp[1])
+    else:
+        validate_val(vars, valOp[1])
+        validate_val(vars, valOp[2])
+
 def validate_call(vars, fnames, call):
     validate_fname(fnames, call[1])
     if fnames[call[1]] != len(call[2]):
         raise SyntaxError('Unmatched parameter of function ' + call[1])
     for val in call[2]:
-        validate_val(vars, val)
+        validate_valOp(vars, val)
 
 def validate_asgmtVal(vars, fnames, asgmtVal):
     if type(asgmtVal) is not list:
         validate_val(vars, asgmtVal)
+    elif asgmtVal[0] == 'call':
+        validate_call(vars, fnames, asgmtVal)
     else:
-        if asgmtVal[0] == 'call':
-            validate_call(vars, fnames, asgmtVal)
-        elif asgmtVal[0] == '~':
-            validate_val(vars, asgmtVal[1])
-        else:
-            validate_val(vars, asgmtVal[1])
-            validate_val(vars, asgmtVal[2])
+        validate_valOp(vars, asgmtVal)
 
 def validate_condition(vars, condition):
     if condition != 'true':
