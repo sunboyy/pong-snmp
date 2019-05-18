@@ -28,6 +28,7 @@ module system(
     output [3:0] vgaRed, vgaGreen, vgaBlue,
     output Hsync, Vsync,
     input clk,
+    input PS2Clk, PS2Data,
     input [15:0] sw,
     input btnC,
     input btnL,
@@ -52,7 +53,7 @@ wire [2:0] uartrState; //temp
 wire vga; //temp
 cpu cpu(addr, memOE, memWE, iack, data, targetClk, irq, btnRSync, ct, pc, instruction);
 
-memmap mmap(seg, an, RsTx, irq, vgaColor, data, targetClk, clk, addr, sw[11:4], vgaX, vgaY, memOE, memWE, RsRx, iack, btnRSync, uartData, uartrState, vga);
+memmap mmap(seg, an, RsTx, irq, vgaColor, data, targetClk, clk, addr, sw[11:4], vgaX, vgaY, memOE, memWE, RsRx, iack, btnRSync, uartData, uartrState, vga, PS2Clk, PS2Data);
 
 assign vgaRed = video_on ? {vgaColor, vgaColor, vgaColor, vgaColor} : 4'b0;
 assign vgaGreen = video_on ? {vgaColor, vgaColor, vgaColor, vgaColor} : 4'b0;

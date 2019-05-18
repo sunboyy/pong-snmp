@@ -34,9 +34,11 @@ module memmap(
     ,//temp
     output [7:0] uartData,
     output [2:0] uartrState,
-    output vga
+    output vga,
+    input PS2Clk, PS2Data
 );
 wire switch = addr == 16'hfff0;
+wire ps2Receive = addr == 16'hffe0;
 wire sevenSegWE0 = addr == 16'hfff8;
 wire sevenSegWE1 = addr == 16'hfff9;
 wire sevenSegWE2 = addr == 16'hfffa;
@@ -45,21 +47,26 @@ wire sevenSegWEAll = addr == 16'hfffe;
 wire sevenSegWEDec = addr == 16'hffff;
 wire sevenSeg = sevenSegWE0 | sevenSegWE1 | sevenSegWE2 | sevenSegWE3 | sevenSegWEAll | sevenSegWEDec;
 wire uartSend = addr == 16'hffef;
-wire uartReceive = addr == 16'hffe0;
+wire uartReceive = addr == 16'hffd0;    // change from ffe0
 assign vga = (addr >= 16'he000) & (addr < 16'hf2c0);
-wire io = switch | sevenSeg | uartSend | uartReceive | vga;
+wire io = switch | sevenSeg | uartSend | uartReceive | vga | ps2Receive;
 wire busy;
+wire [15:0] keycode;
 //wire [7:0] uartData;
 
 assign d = (switch & oe) ? {8'h0, sw} : 16'bZ;
 assign d = (uartReceive & oe) ? {8'h0, uartData} : 16'bZ;
+assign d = (ps2Receive & oe) ? keycode : 16'bZ;
 
 sevenSegRegister ssr(seg, an, clk, realClk, d, we & sevenSegWEAll,
     we & sevenSegWE3, we & sevenSegWE2, we & sevenSegWE1, we & sevenSegWE0,
     we & sevenSegWEDec, reset);
 UARTTransmitter uartt(RsTx, busy, realClk, we & uartSend & !busy, d[7:0]);
 
-UARTReceiver uartr(uartData, irq, realClk, RsRx, iack, uartrState);
+//UARTReceiver uartr(uartData, irq, realClk, RsRx, iack, uartrState);
 memory mem(d, clk, addr, oe & !io, we & !io);
 vgaMemory vgam(vgaColor, d, clk, addr - 16'he000, vgaX, vgaY, oe & vga, we & vga);
+PS2Receiver kb(realClk, PS2Clk, PS2Data, keycode, irq, iack);
+
+
 endmodule

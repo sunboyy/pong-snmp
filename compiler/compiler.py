@@ -6,6 +6,7 @@ from semantic_validator import validate
 from code_generator import generate_code
 from argparse import ArgumentParser
 from assembler import assemble
+import sys
 
 def compile(code):
     tokens = tokenize(code)
@@ -30,6 +31,7 @@ if __name__ == "__main__":
     args = argparser.parse_args()
     with open(args.src) as infile:
         code = infile.read()
+    sys.setrecursionlimit(10000)
     asm = compile(code)
     assembly = assemble(asm, args.output_path)
     if args.output_path:

@@ -104,9 +104,9 @@ class Parser:
             return ['load', id, val]
         elif self.tokens[0] == 'store':
             self.__match('store')
-            id = self.__parse_id()
-            val = self.__parse_val()
-            return ['store', id, val]
+            val1 = self.__parse_val()
+            val2 = self.__parse_val()
+            return ['store', val1, val2]
         elif self.tokens[0] == 'if':
             self.__match('if')
             self.__match('(')

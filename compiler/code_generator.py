@@ -8,7 +8,7 @@ def get_constants(block):
     if type(block[0]) is int:
         return [block[0]] + get_constants(block[1:])
     if block[0] in ['load', 'store']:
-        return []
+        return get_constants([block[1]])
     return get_constants(block[1:])
 
 def generate_valOp(dest, valOp, mapper):

@@ -14,7 +14,7 @@ block -> statement ; block
 block -> ''
 statement -> return val
 statement -> load ID val
-statement -> store ID val
+statement -> store val val
 statement -> FNAME ( paramCall )
 statement -> assignment
 assignment -> ID = asgmtVal
