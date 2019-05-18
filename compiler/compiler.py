@@ -5,6 +5,7 @@ from parser import Parser
 from semantic_validator import validate
 from code_generator import generate_code
 from argparse import ArgumentParser
+from assembler import assemble
 
 def compile(code):
     tokens = tokenize(code)
@@ -30,8 +31,9 @@ if __name__ == "__main__":
     with open(args.src) as infile:
         code = infile.read()
     asm = compile(code)
+    assembly = assemble(asm, args.output_path)
     if args.output_path:
         with open(args.output_path, 'w') as outfile:
-            outfile.write('\n'.join(prettify(asm)))
+            outfile.write(assembly)
     else:
-        print('\n'.join(prettify(asm)))
+        print(assembly)

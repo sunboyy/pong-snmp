@@ -1,4 +1,3 @@
-from argparse import ArgumentParser
 REG = 5
 IMM = 16
 tag_list = {}
@@ -163,7 +162,6 @@ def compiler(line):
 
 def scan_ins(line):
     op = line[0]
-    print(op)
     global line_current
     if (op[-1] == ':'):   return store_tag(op)
     elif (op.isdigit()):  line_current = line_current + 1
@@ -171,7 +169,6 @@ def scan_ins(line):
     else: errorMessage('not have this operation')
 
 def scanner(code):
-    print(code)
     ins_in_file = []
     for line in code:
         ass = line
@@ -184,25 +181,18 @@ def scanner(code):
             ins_in_file.append((ass,line))
     return ins_in_file
 
-if __name__ == "__main__":
-    argparser = ArgumentParser()
-    argparser.add_argument('src', help='Source path')
-    argparser.add_argument('-o', '--output-path', dest='output_path', help='Output path')
-    args = argparser.parse_args()
-    with open(args.src) as infile:
-        code = infile.read()
-        code = code.split('\n')
-    ins_list = scanner(code)
-    if args.output_path:
-        with open(args.output_path, 'w') as outfile:
-            for t in ins_list:
-                print(t[1])
-                ins = compiler(t[1])
-                print(ins)
-                begin, end = '', ''
-                count = 0
-                for a in ins:
-                    if (count < 16):    begin += a
-                    else:               end += a
-                    if (a != '_'):      count += 1
-                outfile.write(begin.strip('_') + '\n' + end.strip('_') + '\t// ' + t[0] + '\n')
+def assemble(asm, output_name):
+    ins_list = scanner(asm)
+    assembly = ''
+    for t in ins_list:
+        print(t[1])
+        ins = compiler(t[1])
+        print(ins)
+        begin, end = '', ''
+        count = 0
+        for a in ins:
+            if (count < 16):    begin += a
+            else:               end += a
+            if (a != '_'):      count += 1
+        assembly += begin.strip('_') + '\n' + end.strip('_') + '\t// ' + t[0] + '\n'
+    return assembly
