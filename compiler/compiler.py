@@ -5,6 +5,7 @@ from parser import Parser
 from semantic_validator import validate
 from code_generator import generate_code
 from argparse import ArgumentParser
+import sys
 
 def compile(code):
     tokens = tokenize(code)
@@ -29,6 +30,7 @@ if __name__ == "__main__":
     args = argparser.parse_args()
     with open(args.src) as infile:
         code = infile.read()
+    sys.setrecursionlimit(10000)
     asm = compile(code)
     if args.output_path:
         with open(args.output_path, 'w') as outfile:

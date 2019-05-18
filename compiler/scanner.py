@@ -11,21 +11,13 @@ def __tokenize(code: str) -> List[str]:
     tokens = []
     while len(code) > 0:
         code = code.strip()
-        match = re.findall('^[\>\<\=\!]\=', code)
-        if len(match) > 0:
-            token = match[0]
+        if code[:2] in ['<<', '>>', '==', '>=', '<=', '!=']:
+            token = code[:2]
             tokens.append(token)
             code = code[len(token):]
             continue
-        match = re.findall('^[<>]{2}', code)
-        if len(match) > 0:
-            token = match[0]
-            tokens.append(token)
-            code = code[len(token):]
-            continue
-        match = re.findall('^[;,\(\)\{\}\+\-\*\/\%\&\|\^\~\=\<\>]', code)
-        if len(match) > 0:
-            token = match[0]
+        if code[0] in '[;,()\{\}+-*/%&|^~=<>':
+            token = code[0]
             tokens.append(token)
             code = code[len(token):]
             continue
