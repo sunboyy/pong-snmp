@@ -79,14 +79,14 @@ wire [8:0] idx = 319 - x;
 
 always @*
     if (gameState)
-        if (((y == 40) | (y == 201)) & (x >= 40) & (x < 280))
+        if (((y == 60) | (y == 221)) & (x >= 40) & (x < 280))
             vgaColor = 1;
-        else if (((y >= 41) & (y < 201) & (x >= 40) & (x < 280)))
-            if ((x - 40 >= ballX) & (x - 40 < ballX + 8) & (y - 41 >= ballY) & (y - 41 < ballY + 8))
+        else if (((y >= 61) & (y < 221) & (x >= 40) & (x < 280)))
+            if ((x - 40 >= ballX) & (x - 40 < ballX + 8) & (y - 61 >= ballY) & (y - 61 < ballY + 8))
                 vgaColor = 1;
-            else if ((x >= 40) & (x < 48) & (y - 41 >= padA) & (y - 41 < padA + 40))
+            else if ((x >= 40) & (x < 48) & (y - 61 >= padA) & (y - 61 < padA + 40))
                 vgaColor = 1;
-            else if ((x >= 272) & (x < 280) & (y - 41 >= padA) & (y - 41 < padA + 40))
+            else if ((x >= 272) & (x < 280) & (y - 61 >= padA) & (y - 61 < padA + 40))
                 vgaColor = 1;
             else
                 vgaColor = 0;

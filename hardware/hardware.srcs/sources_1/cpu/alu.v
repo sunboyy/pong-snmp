@@ -49,5 +49,5 @@ always @(a, b, mode)
     endcase
 always @(posedge clk)
     if (saveFlag)
-        flag = {a < b, a == b};
+        flag = {a + 16'h8000 < b + 16'h8000, a == b};
 endmodule
