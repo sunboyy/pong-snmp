@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 05/19/2019 02:38:37 PM
+// Create Date: 05/19/2019 05:14:11 PM
 // Design Name: 
-// Module Name: scoreMemory
+// Module Name: scoreMem
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,23 +20,24 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module scoreMemory(
+module scoreMem(
     output reg color,
     input [8:0] x,
     input [8:0] y,
-    input [4:0] number
+    input [3:0] number
     );
     
-reg [15:0] number0 [0:23];
-reg [15:0] number1 [0:23];
-reg [15:0] number2 [0:23];
-reg [15:0] number3 [0:23];
-reg [15:0] number4 [0:23];
-reg [15:0] number5 [0:23];
-reg [15:0] number6 [0:23];
-reg [15:0] number7 [0:23];
-reg [15:0] number8 [0:23];
-reg [15:0] number9 [0:23];
+reg [0:15] number0 [0:23];
+reg [0:15] number1 [0:23];
+reg [0:15] number2 [0:23];
+reg [0:15] number3 [0:23];
+reg [0:15] number4 [0:23];
+reg [0:15] number5 [0:23];
+reg [0:15] number6 [0:23];
+reg [0:15] number7 [0:23];
+reg [0:15] number8 [0:23];
+reg [0:15] number9 [0:23];
+
 initial
 begin
     $readmemb("number_0.mem", number0);
@@ -51,4 +52,18 @@ begin
     $readmemb("number_9.mem", number9);
 end
 
+always @*
+    case (number)
+        0: color = number0[y][x];
+        1: color = number1[y][x];
+        2: color = number2[y][x];
+        3: color = number3[y][x];
+        4: color = number4[y][x];
+        5: color = number5[y][x];
+        6: color = number6[y][x];
+        7: color = number7[y][x];
+        8: color = number8[y][x];
+        9: color = number9[y][x];
+    endcase
 endmodule
+
