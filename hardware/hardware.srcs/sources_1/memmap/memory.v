@@ -29,7 +29,7 @@ module memory (
 reg [15:0] mem [0:8191];
 assign d = oe ? mem[addr] : 16'bZ;
 
-initial $readmemb("change_state.mem", mem);
+initial $readmemb("interrupttest.mem", mem);
 always @(posedge clk)
     if (we)
         mem[addr] = d;

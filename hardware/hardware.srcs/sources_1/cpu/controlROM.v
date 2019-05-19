@@ -117,7 +117,7 @@ always @*
         default: controlSignalBundle = 0;
     endcase
 
-wire memOE = fetch1 | fetch2 | (iload & (mdirect | mregin));
+wire memOE = (!interrupt & (fetch1 | fetch2)) | (iload & (mdirect | mregin));
 wire branch = ibrn & shouldJump;
 wire push = ipush;
 wire pop = ipop;
@@ -133,7 +133,7 @@ assign addr = addrOE ? instruction[15:0] : 16'bZ;
 wire dataOE = (iload & mimm) | ijmp | icall | ibrn | icack;
 assign data = dataOE ? instruction[15:0] : 16'bZ;
 assign data = (interrupt & fetch1) ? 16'hc000 : 16'bZ;
-assign data = (interrupt & fetch2) ? 16'h1000 : 16'bZ;
+assign data = (interrupt & fetch2) ? 16'h0002 : 16'bZ;
 
 //assign regA = ((istore & mdirect) | ialu | icmp | ipush) ? instruction[25:21] : 5'bZ;
 //assign regA = (iload & mregin) ? instruction[20:16] : 5'bZ;

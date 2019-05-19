@@ -86,7 +86,7 @@ always @*
                 vgaColor = 1;
             else if ((x >= 40) & (x < 48) & (y - 61 >= padA) & (y - 61 < padA + 40))
                 vgaColor = 1;
-            else if ((x >= 272) & (x < 280) & (y - 61 >= padA) & (y - 61 < padA + 40))
+            else if ((x >= 272) & (x < 280) & (y - 61 >= padB) & (y - 61 < padB + 40))
                 vgaColor = 1;
             else
                 vgaColor = 0;
