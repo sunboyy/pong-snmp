@@ -29,7 +29,7 @@ module vgaMemory(
     input oe, we
 );
  
-reg [319:0] startScreen [0:239];
+reg [0:319] startScreen [0:239];
 initial $readmemb("start_screen.mem", startScreen);
 
 reg gameState = 0;
@@ -75,8 +75,10 @@ assign data = oe & (addr == 16'hff04) ? padB : 16'bZ;
 assign data = oe & (addr == 16'hff05) ? ballX : 16'bZ;
 assign data = oe & (addr == 16'hff06) ? ballY : 16'bZ;
 
-wire [8:0] idx = 319 - x;
-
+wire colorADigit, colorATen;
+wire colorBDigit, colorBTen;
+scoreColor(colorATen, colorADigit, colorBTen, colorBDigit, x, y, scoreA, scoreB);
+    
 always @*
     if (gameState)
         if (((y == 60) | (y == 221)) & (x >= 40) & (x < 280))
@@ -88,10 +90,22 @@ always @*
                 vgaColor = 1;
             else if ((x >= 272) & (x < 280) & (y - 61 >= padB) & (y - 61 < padB + 40))
                 vgaColor = 1;
-            else
+            else 
                 vgaColor = 0;
         else
-            vgaColor = 0;
+            if ((y >= 20) & (y < 44))
+                if ((x >= 40) & (x < 56))
+                    vgaColor = colorATen;
+                else if ((x >= 56) & (x < 72))
+                    vgaColor = colorADigit;
+                else if ((x >= 248) & (x < 264))
+                    vgaColor = colorBTen;
+                else if ((x >= 264) & (x < 280))
+                    vgaColor = colorBDigit;
+                else
+                    vgaColor = 0;
+            else
+                vgaColor = 0;
     else
-        vgaColor = startScreen[y] >> idx;
+        vgaColor = startScreen[y][x];
 endmodule
