@@ -2,7 +2,8 @@ from argparse import ArgumentParser
 
 REG = 5
 IMM = 16
-tag_list = {}
+tag_to_line = {}
+line_to_tag = {}
 line_current = 0
 
 OP_LOAD = ['load']
@@ -35,7 +36,8 @@ def to_bin(number, zero):
 
 def store_tag(tag):
     tag = tag.strip(':')
-    tag_list[tag] = str(line_current)
+    tag_to_line[tag] = str(line_current)
+    line_to_tag[line_current] = tag
     print(tag, str(line_current))
     return 'tag'
 
@@ -108,12 +110,12 @@ def compile_jump(line):
     elif (operation == 'jgt'):  jumpOp = '101'
     elif (operation == 'jge'):  jumpOp = '110'
     
-    if (tag_list[A]): A = tag_list[A]
+    if (tag_to_line[A]): A = tag_to_line[A]
     return concat_ins(['0110', jumpOp, dont_care(9), to_bin(A, IMM)])
 
 def compile_call(line):
     A = line[1]
-    if (tag_list[A]): A = tag_list[A]
+    if (tag_to_line[A]): A = tag_to_line[A]
     return concat_ins(['0111', dont_care(12), to_bin(A, IMM)])
 
 def compile_return(line):
@@ -185,6 +187,7 @@ def scanner(code):
 
 def toMachine(ins_list):
     assembly = ''
+    code_line = 0
     for t in ins_list:
         print(t[1])
         ins = compiler(t[1])
@@ -194,11 +197,15 @@ def toMachine(ins_list):
         for a in ins:
             if (count < 16):    begin += a
             else:               end += a
-            if (a != '_'):      count += 1
-        if end:    
-            assembly += begin.strip('_') + '\n' + end.strip('_')
-        else:
-            assembly += begin.strip('_')
+            if (a != '_'):      count += 1   
+        assembly += begin.strip('_')
+        print(code_line, line_to_tag)
+        if code_line in line_to_tag:
+            assembly += '\t// ' + line_to_tag[code_line]
+        code_line += 1
+        if end:
+            assembly += '\n' + end.strip('_')
+            code_line += 1
         assembly += '\t// ' + t[0] + '\n'
     return assembly
 
