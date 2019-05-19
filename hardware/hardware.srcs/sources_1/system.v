@@ -44,7 +44,8 @@ clockController cc(targetClk, clk, btnCSync, sw[15]);
 wire [15:0] addr;
 wire [15:0] data;
 wire [9:0] vgaX, vgaY;
-wire memOE, memWE, irq, iack, vgaColor, video_on, p_tick;
+wire memOE, memWE, irq, iack, video_on, p_tick;
+wire [1:0] vgaColor;
 wire [1:0] ct; //temp
 wire [15:0] pc; //temp
 wire [31:0] instruction; //temp
@@ -55,9 +56,9 @@ cpu cpu(addr, memOE, memWE, iack, data, targetClk, irq, btnRSync, ct, pc, instru
 
 memmap mmap(seg, an, RsTx, irq, vgaColor, data, targetClk, clk, addr, sw[11:4], vgaX, vgaY, memOE, memWE, RsRx, iack, btnRSync, uartData, uartrState, vga, PS2Clk, PS2Data);
 
-assign vgaRed = video_on ? {vgaColor, vgaColor, vgaColor, vgaColor} : 4'b0;
-assign vgaGreen = video_on ? {vgaColor, vgaColor, vgaColor, vgaColor} : 4'b0;
-assign vgaBlue = video_on ? {vgaColor, vgaColor, vgaColor, vgaColor} : 4'b0;
+assign vgaRed = video_on ? {vgaColor[1], vgaColor[1], vgaColor[1], vgaColor[1]} : 4'b0;
+assign vgaGreen = video_on ? {vgaColor[0], vgaColor[0], vgaColor[0], vgaColor[0]} : 4'b0;
+assign vgaBlue = video_on ? {vgaColor[1], vgaColor[1], vgaColor[1], vgaColor[1]} : 4'b0;
 vgaTracker vgat(Hsync, Vsync, video_on, p_tick, vgaX, vgaY, clk, btnRSync);
 
 always @*

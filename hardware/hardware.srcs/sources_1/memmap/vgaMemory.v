@@ -21,12 +21,13 @@
 
 
 module vgaMemory(
-    output reg vgaColor,
+    output reg [1:0] vgaColor,
     inout [15:0] data,
     input clk,
     input [15:0] addr,
     input [9:0] vgaX, vgaY,
-    input oe, we
+    input oe, we,
+    input reset
 );
  
 reg [0:319] startScreen [0:239];
@@ -45,12 +46,21 @@ initial begin
     scoreB = 0;
     padA = 0;
     padB = 0;
-    ballX = 8;
-    ballY = 0;
+    ballX = 10;
+    ballY = 10;
 end
 
 always @(posedge clk)
-    if (we) begin
+    if (reset) begin
+        gameState = 0;
+        scoreA = 0;
+        scoreB = 0;
+        padA = 0;
+        padB = 0;
+        ballX = 10;
+        ballY = 10;
+    end
+    else if (we) begin
         if (addr == 16'hff00)
             gameState = data;
         if (addr == 16'hff01)
@@ -82,30 +92,30 @@ scoreColor(colorATen, colorADigit, colorBTen, colorBDigit, x, y, scoreA, scoreB)
 always @*
     if (gameState)
         if (((y == 60) | (y == 221)) & (x >= 40) & (x < 280))
-            vgaColor = 1;
+            vgaColor = 2'b11;
         else if (((y >= 61) & (y < 221) & (x >= 40) & (x < 280)))
             if ((x - 40 >= ballX) & (x - 40 < ballX + 8) & (y - 61 >= ballY) & (y - 61 < ballY + 8))
-                vgaColor = 1;
+                vgaColor = 2'b11;
             else if ((x >= 40) & (x < 48) & (y - 61 >= padA) & (y - 61 < padA + 40))
-                vgaColor = 1;
+                vgaColor = 2'b10;
             else if ((x >= 272) & (x < 280) & (y - 61 >= padB) & (y - 61 < padB + 40))
-                vgaColor = 1;
+                vgaColor = 2'b01;
             else 
                 vgaColor = 0;
         else
             if ((y >= 20) & (y < 44))
                 if ((x >= 40) & (x < 56))
-                    vgaColor = colorATen;
+                    vgaColor = {colorATen, 1'b0};
                 else if ((x >= 56) & (x < 72))
-                    vgaColor = colorADigit;
+                    vgaColor = {colorADigit, 1'b0};
                 else if ((x >= 248) & (x < 264))
-                    vgaColor = colorBTen;
+                    vgaColor = {1'b0, colorBTen};
                 else if ((x >= 264) & (x < 280))
-                    vgaColor = colorBDigit;
+                    vgaColor = {1'b0, colorBDigit};
                 else
                     vgaColor = 0;
             else
                 vgaColor = 0;
     else
-        vgaColor = startScreen[y][x];
+        vgaColor = {startScreen[y][x], startScreen[y][x]};
 endmodule

@@ -24,7 +24,7 @@ module memmap(
     output [6:0] seg,
     output [3:0] an,
     output RsTx, irq,
-    output vgaColor,
+    output [1:0] vgaColor,
     inout [15:0] d,
     input clk, realClk,
     input [15:0] addr,
@@ -65,7 +65,7 @@ UARTTransmitter uartt(RsTx, busy, realClk, we & uartSend & !busy, d[7:0]);
 
 //UARTReceiver uartr(uartData, irq, realClk, RsRx, iack, uartrState);
 memory mem(d, clk, addr, oe & !io, we & !io);
-vgaMemory vgam(vgaColor, d, clk, addr, vgaX, vgaY, oe & vga, we & vga);
+vgaMemory vgam(vgaColor, d, clk, addr, vgaX, vgaY, oe & vga, we & vga, reset);
 PS2Receiver kb(realClk, PS2Clk, PS2Data, keycode, irq, iack);
 
 
