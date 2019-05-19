@@ -1,3 +1,5 @@
+from argparse import ArgumentParser
+
 REG = 5
 IMM = 16
 tag_list = {}
@@ -181,8 +183,7 @@ def scanner(code):
             ins_in_file.append((ass,line))
     return ins_in_file
 
-def assemble(asm):
-    ins_list = scanner(asm)
+def toMachine(ins_list):
     assembly = ''
     for t in ins_list:
         print(t[1])
@@ -194,5 +195,31 @@ def assemble(asm):
             if (count < 16):    begin += a
             else:               end += a
             if (a != '_'):      count += 1
-        assembly += begin.strip('_') + '\n' + end.strip('_') + '\t// ' + t[0] + '\n'
+        if end:    
+            assembly += begin.strip('_') + '\n' + end.strip('_')
+        else:
+            assembly += begin.strip('_')
+        assembly += '\t// ' + t[0] + '\n'
     return assembly
+
+def assemble(asm):
+    ins_list = scanner(asm)
+    assembly = toMachine(ins_list)
+    return assembly
+
+if __name__ == "__main__":
+    argparser = ArgumentParser()
+    argparser.add_argument('src', help='Source path')
+    argparser.add_argument('-o', '--output-path', dest='output_path', help='Output path')
+    args = argparser.parse_args()
+    with open(args.src) as infile:
+        code = infile.read()
+        code = code.split('\n')
+    ins_list = scanner(code)
+    assembly = toMachine(ins_list)
+
+    if args.output_path:
+        with open(args.output_path, 'w') as outfile:
+            outfile.write(assembly)
+    else:
+        print(assembly)
