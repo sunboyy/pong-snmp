@@ -1,0 +1,6 @@
+(a) {
+  while (true) {
+    a = a + 1;
+    store a 0xffff;
+  };
+}

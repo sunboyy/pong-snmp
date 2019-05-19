@@ -1,0 +1,21 @@
+func fib(n) (a, b) {
+    if (n <= 2) {
+        return 1;
+    };
+    n = n - 1;
+    a = fib(n);
+    b = fib(n-1);
+    a = a + b;
+    return a;
+}
+
+(i, x) {
+    while (true) {
+        i = 0;
+        while (i < 20) {
+            x = fib(i);
+            store x 0xffff;
+            i = i + 1;
+        };
+    };
+}

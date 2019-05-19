@@ -1,0 +1,47 @@
+func inter() (kb, st) {
+  load kb 0xffe0;
+  if (kb == 0x001C) {
+    store 1 0x1f07;
+  } else {
+    if (kb == 0x001b) {
+      store 1 0x1f08;
+    } else {
+      if(kb == 0x003b) {
+        store 1 0x1f09;
+      } else {
+        if(kb == 0x0042) {
+          store 1 0x1f0a;
+        } else {
+          if(kb == 0x0029) {
+            load st 0xff00;
+            if (st == 0) {
+              store 1 0xff00;
+            } else {
+              store 0 0xff00;
+            };
+          };
+        };
+      };
+    };
+  };
+  if (kb == 0xF01C) {
+    store 0 0x1f07;
+  } else {
+    if (kb == 0xF01b) {
+      store 0 0x1f08;
+    } else {
+      if(kb == 0xF03b) {
+        store 0 0x1f09;
+      } else {
+        if(kb == 0xF042) {
+          store 0 0x1f0a;
+        };
+      };
+    };
+  };
+  store kb 0xfffe;
+}
+
+() {
+
+}

@@ -1,0 +1,212 @@
+func interrupt() (kb, st) {
+    load kb 0xffe0;
+    if (kb == 0x001C) {
+        store 1 0x1f07;
+    } else {
+        if (kb == 0x001b) {
+            store 1 0x1f08;
+        } else {
+            if(kb == 0x003b) {
+                store 1 0x1f09;
+            } else {
+                if(kb == 0x0042) {
+                    store 1 0x1f0a;
+                } else {
+                    if(kb == 0x0029) {
+                        load st 0xff00;
+                        if (st == 0) {
+                            store 1 0xff00;
+                        } else {
+                            store 0 0xff00;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    if (kb == 0xF01C) {
+        store 0 0x1f07;
+    } else {
+        if (kb == 0xF01b) {
+            store 0 0x1f08;
+        } else {
+            if(kb == 0xF03b) {
+                store 0 0x1f09;
+            } else {
+                if(kb == 0xF042) {
+                    store 0 0x1f0a;
+                };
+            };
+        };
+    };
+    store kb 0xfffe;
+}
+
+func moveBall() (vx, vy, bx, by) {
+    load bx 0xff05;
+    load by 0xff06;
+    load vx 0x1ffe;
+    load vy 0x1fff;
+    bx = bx + vx;
+    by = by + vy;
+    // if (bx < 0) {
+    //     bx = 0;
+    // } else {
+    //     if (bx > 239) {
+    //         bx = 239;
+    //     };
+    // };
+    // if (by < 0) {
+    //     by = 0;
+    // } else {
+    //     if ( by > 159) {
+    //         by = 159;
+    //     };
+    // };
+    store bx 0xff05;
+    store by 0xff06;
+}
+
+func chkOutField() (bl, br, sc) {
+    load bl 0xff05; // ball pos x
+    br = bl + 8;
+    if (bl <= 8) {
+        load sc 0xff02;
+        // set ball position
+        store 116 0xff05; // ballX
+        store 76 0xff06; // ballY
+        // set vector speed ball
+        store 1 0x1ffe; // vx = 1
+        store 1 0x1fff; // vy = 1
+        sc = sc + 1;
+        store sc 0xff02;
+        return 2;
+    } else {
+        if (br >= 232) {
+            load sc 0xff01;
+            // set ball position
+            store 116 0xff05; // ballX
+            store 76 0xff06; // ballY
+            // set vector speed ball
+            store 1 0x1ffe; // vx = 1
+            store 1 0x1fff; // vy = 1
+            sc = sc + 1;
+            store sc 0xff01;
+            return 2;
+        };
+    };
+    return 0;
+}
+
+func detectBound() (bu, bd, vy, d) {
+    load bu 0xff06; // upper boundary of the ball (y)
+    load vy 0x1fff;
+    bd = bu + 8;
+    d = 0;
+    if (bu <= 0) {
+        vy = 0 - vy;
+        d = 1;
+    } else {
+        if (bd >= 159) {
+            vy = 0 - vy;
+            d = 1;
+        };
+    };
+    store vy 0x1fff;
+    return d;
+}
+
+func doInRange(pA, bl, br) (vx, d) {
+    load vx 0x1ffe;
+    d = 0;
+    if (pA == 0xff03) { // pad left
+        if (bl == 8) {
+            vx = 0 - vx;
+            d = 1;
+        };
+    } else {
+        if (pA == 0xff04) { // pad right
+            if (br == 232) {
+                vx = 0 - vx;
+                d = 1;
+            };
+        };
+    };
+    store vx 0x1ffe;
+    return d;
+}
+
+func detectPaddle(pA) (bl, br, bu, bd, pd, pu, ru, rd, d) {
+    load bl 0xff05;
+    load bu 0xff06;
+    load pu pA;
+    br = bl + 8;
+    bd = bu + 8;
+    pd = pu + 40;
+    d = 0;
+    if ( pu <= bd ) {    // ball in range (y axis)
+        if ( bu <= pd) {
+            d = doInRange(pA, bl, br);
+        };
+    };
+    return d;
+}
+
+func movePaddle(aU, aD, aP) (bU, bD, p, pD) {
+    load bU aU;
+    load bD aD;
+    load p aP;
+    if (bU == 1) {
+        if (p > 0) {
+            p = p - 1;
+        };
+    }
+    else {
+        if (bD == 1) {
+            pD = p + 40;
+            if (pD < 159) {
+                p = p + 1;
+            };
+        };
+    };
+    store p aP;
+}
+
+(st, d) {
+    while (true) {
+        load st 0xff00;
+        while (st == 0) {
+            load st 0xff00;
+            // set vector speed ball
+            store 1 0x1ffe; // vx = 1
+            store 1 0x1fff; // vy = 1
+            // set padYPos
+            store 60 0xff03; // pad left
+            store 60 0xff04; // pad right
+            // set score
+            store 0 0xff01;
+            store 0 0xff02;
+            // set ball position
+            store 116 0xff05; // ballX
+            store 76 0xff06; // ballY
+        };
+        while (st == 1) {
+            load st 0xff00;
+            d = detectBound();
+            if (d == 0) {
+                d = detectPaddle(0xff03);   //detect pad left
+                if (d == 0) {
+                    d = detectPaddle(0xff04);   // detect pad right
+                };
+            };
+            if (d != 1) {
+                d = chkOutField();
+            };
+            movePaddle(0x1f07, 0x1f08, 0xff03); // mov pad left
+            movePaddle(0x1f09, 0x1f0a, 0xff04); // mov pad right
+            if(d != 2) {
+                moveBall();
+            };
+        };
+    };
+}

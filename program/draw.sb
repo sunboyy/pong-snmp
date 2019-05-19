@@ -1,0 +1,25 @@
+func draw(x, y, c) (tm, ad, dt) {
+    ad = y * 20;
+    tm = x / 16;
+    ad = ad + tm;
+    ad = ad + 0xe000;
+    load dt ad;
+    tm = x % 16;
+    tm = 15 - tm;
+    tm = 1 << tm;
+    if (c == 0) {
+        tm = ~tm;
+        dt = dt & tm;
+    } else {
+        dt = dt | tm;
+    };
+    store dt ad;
+}
+
+(i) {
+    i = 0;
+    while (true) {
+        draw(i, 0, 1);
+        i = i + 1;
+    };
+}
