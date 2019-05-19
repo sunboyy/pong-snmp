@@ -27,6 +27,6 @@ module clockController(
     input auto
 );
 wire dividedClk;
-clockDivisorBundle #(18) cdb(dividedClk, clk);
+clockDivisorBundle #(16) cdb(dividedClk, clk);
 assign targetClk = auto ? dividedClk : trigger;
 endmodule
