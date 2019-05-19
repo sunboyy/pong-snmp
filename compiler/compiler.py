@@ -28,14 +28,24 @@ if __name__ == "__main__":
     argparser = ArgumentParser()
     argparser.add_argument('src', help='Source path')
     argparser.add_argument('-o', '--output-path', dest='output_path', help='Output path')
+    argparser.add_argument('-S', dest='asm', help='Assembly', type=bool, default=False, nargs='?', const=True)
     args = argparser.parse_args()
     with open(args.src) as infile:
         code = infile.read()
-    sys.setrecursionlimit(10000)
+    sys.setrecursionlimit(5000)
     asm = compile(code)
-    assembly = assemble(asm, args.output_path)
-    if args.output_path:
-        with open(args.output_path, 'w') as outfile:
-            outfile.write(assembly)
+    if args.asm:
+        asm = prettify(asm)
+        if args.output_path:
+            with open(args.output_path, 'w') as outfile:
+                for line in asm:
+                    outfile.write(line + '\n')
+        else:
+            print(asm)
     else:
-        print(assembly)
+        machine_code = assemble(asm)
+        if args.output_path:
+            with open(args.output_path, 'w') as outfile:
+                outfile.write(machine_code)
+        else:
+            print(machine_code)

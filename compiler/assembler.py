@@ -181,7 +181,7 @@ def scanner(code):
             ins_in_file.append((ass,line))
     return ins_in_file
 
-def assemble(asm, output_name):
+def assemble(asm):
     ins_list = scanner(asm)
     assembly = ''
     for t in ins_list:
