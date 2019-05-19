@@ -117,7 +117,7 @@ always @*
         default: controlSignalBundle = 0;
     endcase
 
-wire memOE = fetch1 | fetch2 | (iload & (mdirect | mregin));
+wire memOE = (!interrupt & (fetch1 | fetch2)) | (iload & (mdirect | mregin));
 wire branch = ibrn & shouldJump;
 wire push = ipush;
 wire pop = ipop;
