@@ -156,9 +156,23 @@ def generate_code(tree):
         mapper[v] = 'r{}'.format(len(mapper) + max_params + 2)
     
     code = []
+    code.append('jmp main')
+
+    # Interrupt
+    for func in tree[:-1]:
+        if func[0] == 'interrupt':
+            code += generate_func(func, max_params)
+            break
+
+    # Main
+    code.append('main:')
     for v in constants:
         code.append('load {} #{}'.format(mapper[v], v))
-    code += generate_block(block, 'main', '', mapper)
+    code += generate_block(block, 'main', 'main', mapper)
+
+    # Functions
     for func in tree[:-1]:
+        if func[0] == 'interrupt':
+            continue
         code += generate_func(func, max_params)
     return code

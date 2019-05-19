@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="39" Path="D:/PONG/HW_SYN_LAB/project/pong-snmp/hardware/hardware.xpr">
+<Project Version="7" Minor="39" Path="Z:/Work/Y3/HwSynLab/project_pong/pong-snmp/hardware/hardware.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="1ab4bf30a7c448a78d59f2c5ff9b0cc9"/>
