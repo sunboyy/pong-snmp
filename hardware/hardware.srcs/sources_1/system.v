@@ -48,13 +48,9 @@ wire memOE, memWE, irq, iack, video_on, p_tick;
 wire [1:0] vgaColor;
 wire [1:0] ct; //temp
 wire [15:0] pc; //temp
-wire [31:0] instruction; //temp
-wire [7:0] uartData; //temp
-wire [2:0] uartrState; //temp
-wire vga; //temp
-cpu cpu(addr, memOE, memWE, iack, data, targetClk, irq, btnRSync, ct, pc, instruction);
+cpu cpu(addr, memOE, memWE, iack, data, targetClk, irq, btnRSync, ct, pc);
 
-memmap mmap(seg, an, RsTx, irq, vgaColor, data, targetClk, clk, addr, sw[11:4], vgaX, vgaY, memOE, memWE, RsRx, iack, btnRSync, uartData, uartrState, vga, PS2Clk, PS2Data);
+memmap mmap(seg, an, RsTx, irq, vgaColor, data, targetClk, clk, addr, sw[11:4], vgaX, vgaY, PS2Clk, PS2Data, memOE, memWE, RsRx, iack, btnRSync);
 
 assign vgaRed = video_on ? {vgaColor[1], vgaColor[1], vgaColor[1], vgaColor[1]} : 4'b0;
 assign vgaGreen = video_on ? {vgaColor[0], vgaColor[0], vgaColor[0], vgaColor[0]} : 4'b0;
@@ -62,14 +58,11 @@ assign vgaBlue = video_on ? {vgaColor[1], vgaColor[1], vgaColor[1], vgaColor[1]}
 vgaTracker vgat(Hsync, Vsync, video_on, p_tick, vgaX, vgaY, clk, btnRSync);
 
 always @*
-    case (sw[2:0])
+    case (sw[1:0])
         0 : led = data;
         1 : led = addr;
-        2 : led = instruction[15:0];
-        3 : led = instruction[31:16];
-        4 : led = {pc[13:0], ct};
-        5 : led = {iack, irq, 3'h0, uartrState, uartData};
-        6 : led = vga;
+        2 : led = {pc[13:0], ct};
+        3 : led = {iack, irq, 14'h0};
         default : led = 0;
     endcase
 endmodule

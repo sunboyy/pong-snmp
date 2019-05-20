@@ -27,8 +27,7 @@ module cpu(
     input clk, irq, reset,
     //temp
     output [1:0] ct,
-    output [15:0] pcD,
-    output [31:0] instruction
+    output [15:0] pcD
 );
 wire [4:0] regAddrA, regAddrB, regAddrD;
 wire [15:0] outA, outB;
@@ -40,7 +39,7 @@ alu alu(data, flag, clk, outA, outB, aluMode, aluOE, saveFlag);
 assign data = regAOE ? outA : 16'bZ;
 assign data = regBOE ? outB : 16'bZ;
 assign addr = regAAE ? outA : 16'bZ;
-controlUnit cu(addr, regAddrA, regAddrB, regAddrD, aluMode, memOE, memWE, regAOE, regBOE, regWE, regAAE, aluOE, pcOE, pcWE, pcUp, saveFlag, call, ret, branch, push, pop, iack, data, clk, irq, flag, reset, ct, instruction);
+controlUnit cu(addr, regAddrA, regAddrB, regAddrD, aluMode, memOE, memWE, regAOE, regBOE, regWE, regAAE, aluOE, pcOE, pcWE, pcUp, saveFlag, call, ret, branch, push, pop, iack, data, clk, irq, flag, reset, ct);
 
 stackZ stz(data, clk, push, pop, reset);
 register r(outA, outB, clk, regAddrA, regAddrB, regAddrD, data, regWE);

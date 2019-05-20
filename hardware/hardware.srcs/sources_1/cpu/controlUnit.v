@@ -34,8 +34,7 @@ module controlUnit(
     input [1:0] flag,
     input reset,
     // temp
-    output [1:0] ct,
-    output [31:0] instruction
+    output [1:0] ct
 );
 reg [1:0] counter = 0;
 assign ct = counter; //temp
@@ -52,7 +51,6 @@ always @(posedge clk)
 
 wire irWEM, irWEL;
 wire [31:0] irData;
-assign instruction = irData; //temp
 assign pcUp = (irWEM | irWEL) & !interrupt;
 instructionRegister ir(irData, clk, data, irWEM, irWEL);
 wire [17:0] controlSignal = {memOE, regAOE, regBOE, memWE, regWE, aluOE, pcOE, pcWE, saveFlag, irWEM, irWEL, call, ret, branch, push, pop, iack, regAAE};
