@@ -25,6 +25,7 @@ module memmap(
     output [3:0] an,
     output RsTx, irq,
     output [1:0] vgaColor,
+    output gameState,
     inout [15:0] d,
     input clk, realClk,
     input [15:0] addr,
@@ -55,7 +56,7 @@ sevenSegRegister ssr(seg, an, clk, realClk, d, we & sevenSegWEAll,
     we & sevenSegWEDec, reset);
 
 memory mem(d, clk, addr, oe & !io, we & !io);
-vgaMemory vgam(vgaColor, d, clk, addr, vgaX, vgaY, oe & vga, we & vga, reset);
+vgaMemory vgam(vgaColor, gameState, d, clk, addr, vgaX, vgaY, oe & vga, we & vga, reset);
 PS2Receiver kb(realClk, PS2Clk, PS2Data, keycode, irq, iack);
 
 endmodule

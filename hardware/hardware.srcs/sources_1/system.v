@@ -44,13 +44,13 @@ clockController cc(targetClk, clk, btnCSync, sw[15]);
 wire [15:0] addr;
 wire [15:0] data;
 wire [9:0] vgaX, vgaY;
-wire memOE, memWE, irq, iack, video_on, p_tick;
+wire memOE, memWE, irq, iack, video_on, p_tick, gameState;
 wire [1:0] vgaColor;
 wire [1:0] ct; //temp
 wire [15:0] pc; //temp
 cpu cpu(addr, memOE, memWE, iack, data, targetClk, irq, btnRSync, ct, pc);
 
-memmap mmap(seg, an, RsTx, irq, vgaColor, data, targetClk, clk, addr, sw[11:4], vgaX, vgaY, PS2Clk, PS2Data, memOE, memWE, RsRx, iack, btnRSync);
+memmap mmap(seg, an, RsTx, irq, vgaColor, gameState, data, targetClk, clk, addr, sw[11:4], vgaX, vgaY, PS2Clk, PS2Data, memOE, memWE, RsRx, iack, btnRSync);
 
 assign vgaRed = video_on ? {vgaColor[1], vgaColor[1], vgaColor[1], vgaColor[1]} : 4'b0;
 assign vgaGreen = video_on ? {vgaColor[0], vgaColor[0], vgaColor[0], vgaColor[0]} : 4'b0;
@@ -62,7 +62,7 @@ always @*
         0 : led = data;
         1 : led = addr;
         2 : led = {pc[13:0], ct};
-        3 : led = {iack, irq, 14'h0};
+        3 : led = {iack, irq, 13'h0, gameState};
         default : led = 0;
     endcase
 endmodule

@@ -22,6 +22,7 @@
 
 module vgaMemory(
     output reg [1:0] vgaColor,
+    output reg gameState,
     inout [15:0] data,
     input clk,
     input [15:0] addr,
@@ -33,7 +34,6 @@ module vgaMemory(
 reg [0:319] startScreen [0:239];
 initial $readmemb("start_screen.mem", startScreen);
 
-reg gameState = 0;
 reg [7:0] scoreA, scoreB;
 reg [7:0] padA, padB;
 reg [7:0] ballX, ballY;
@@ -42,6 +42,7 @@ wire [8:0] x = vgaX >> 1;
 wire [8:0] y = vgaY >> 1;
 
 initial begin
+    gameState = 0;
     scoreA = 0;
     scoreB = 0;
     padA = 0;
