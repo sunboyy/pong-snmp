@@ -1,0 +1,24 @@
+(st, bx, di) {
+    di = 0;
+    store 1 0xff06;
+    while (true) {
+        load st 0xfff0;
+        store st 0xff00;
+        if (st == 1) {
+            load bx 0xff05;
+            if (di == 0) {
+                bx = bx + 1;
+            } else {
+                bx = bx - 1;
+            };
+            store bx 0xff05;
+            store bx 0xffff;
+            if (bx <= 8) {
+                di = 0;
+            };
+            if (bx >= 224) {
+                di = 1;
+            };
+        };
+    };
+}

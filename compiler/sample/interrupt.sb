@@ -1,0 +1,18 @@
+func changeState() (st) {
+    load st 0xff00;
+    st = 1 - st;
+    store st 0xff00;
+}
+
+func interrupt() (n) {
+    load n 0xffe0;
+    store n 0xfffe;
+    store n 0xffef;
+    if (n == 0x0029) {
+        changeState();
+    };
+}
+
+() {
+    while (true) { };
+}

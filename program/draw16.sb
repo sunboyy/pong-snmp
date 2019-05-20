@@ -1,7 +1,0 @@
-(i) {
-    i = 0xe000;
-    while (true) {
-        store 0xffff i;
-        i = i+1;
-    };
-}
