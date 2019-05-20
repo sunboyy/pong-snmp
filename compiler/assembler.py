@@ -199,7 +199,6 @@ def toMachine(ins_list):
             else:               end += a
             if (a != '_'):      count += 1   
         assembly += begin.strip('_')
-        print(code_line, line_to_tag)
         if code_line in line_to_tag:
             assembly += '\t// ' + line_to_tag[code_line]
         code_line += 1

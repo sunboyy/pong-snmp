@@ -34,9 +34,9 @@ module vgaMemory(
 reg [0:319] startScreen [0:239];
 initial $readmemb("start_screen.mem", startScreen);
 
-reg [7:0] scoreA, scoreB;
-reg [7:0] padA, padB;
-reg [7:0] ballX, ballY;
+reg [15:0] scoreA, scoreB;
+reg [15:0] padA, padB;
+reg [15:0] ballX, ballY;
 
 wire [8:0] x = vgaX >> 1;
 wire [8:0] y = vgaY >> 1;
@@ -51,7 +51,7 @@ initial begin
     ballY = 10;
 end
 
-always @(posedge clk)
+always @(posedge clk, posedge reset)
     if (reset) begin
         gameState = 0;
         scoreA = 0;
